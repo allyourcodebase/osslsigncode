@@ -1,3 +1,3 @@
-# zig build system port of osslsigntool
+# zig build system port of osslsigncode
 
 https://github.com/mtrojnar/osslsigncode

@@ -12,8 +12,13 @@ pub fn build(b: *std.Build) void {
         .link_libc = true,
     });
 
+    // FIXME: why don't these work from config.h?
+    lib_mod.addCMacro("HAVE_SYS_MMAN_H", "");
+    lib_mod.addCMacro("HAVE_MMAP", "");
+
     const config_h = b.addConfigHeader(.{
         .style = .{ .cmake = osslsigncode_origin_dep.path("Config.h.in") },
+        .include_path = "config.h",
     }, .{
         // the configured options and settings for osslsigncode
         // TODO: keep in sync with build.zig.zon
@@ -22,6 +27,8 @@ pub fn build(b: *std.Build) void {
         // SEE: https://github.com/mtrojnar/osslsigncode/blob/4568c890cc1538ca80be3ee36775ba42223dea04/CMakeLists.txt#L23
         .PACKAGE_STRING = "osslsigncode 2.9",
         .PACKAGE_BUGREPORT = "Michal.Trojnara@stunnel.org",
+        .HAVE_SYS_MMAN_H = "",
+        .HAVE_MMAP = "",
     });
 
     lib_mod.addConfigHeader(config_h);
@@ -41,7 +48,40 @@ pub fn build(b: *std.Build) void {
             "script.c",
             "utf.c",
         },
-        .flags = &.{},
+        .flags = &.{
+            // "-ggdb",
+            // "-g",
+            // "-O2",
+            // "-pedantic",
+            // "-Wall",
+            // "-Wextra",
+            // "-Wno-long-long",
+            // "-Wconversion",
+            // "-D_FORTIFY_SOURCE=2",
+            // "-Wformat=2",
+            // "-Wredundant-decls",
+            // "-Wcast-qual",
+            // "-Wnull-dereference",
+            // "-Wno-deprecated-declarations",
+            // "-Wmissing-declarations",
+            // "-Wmissing-prototypes",
+            // "-Wmissing-noreturn",
+            // "-Wmissing-braces",
+            // "-Wparentheses",
+            // "-Wstrict-aliasing=3",
+            // "-Wstrict-overflow=2",
+            // "-Wlogical-op",
+            // "-Wwrite-strings",
+            // "-Wcast-align=strict",
+            // "-Wdisabled-optimization",
+            // "-Wshift-overflow=2",
+            // "-Wundef",
+            // "-Wshadow",
+            // "-Wmisleading-indentation",
+            // "-Wabsolute-value",
+            // "-Wunused-parameter",
+            // "-Wunused-function",
+        },
     });
 
     const exe = b.addExecutable(.{

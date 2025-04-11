@@ -5,12 +5,17 @@ pub fn build(b: *std.Build) void {
     const optimize = b.standardOptimizeOption(.{});
 
     const osslsigncode_origin_dep = b.dependency("osslsigncode-origin", .{ .target = target, .optimize = optimize });
+    const openssl_dep = b.dependency("openssl", .{ .target = target, .optimize = optimize });
+    const zlib_dep = b.dependency("zlib", .{ .target = target, .optimize = optimize });
 
     const lib_mod = b.createModule(.{
         .target = target,
         .optimize = optimize,
         .link_libc = true,
     });
+
+    lib_mod.linkLibrary(openssl_dep.artifact("openssl"));
+    lib_mod.linkLibrary(zlib_dep.artifact("z"));
 
     // FIXME: why don't these work from config.h?
     lib_mod.addCMacro("HAVE_SYS_MMAN_H", "");
@@ -48,40 +53,7 @@ pub fn build(b: *std.Build) void {
             "script.c",
             "utf.c",
         },
-        .flags = &.{
-            // "-ggdb",
-            // "-g",
-            // "-O2",
-            // "-pedantic",
-            // "-Wall",
-            // "-Wextra",
-            // "-Wno-long-long",
-            // "-Wconversion",
-            // "-D_FORTIFY_SOURCE=2",
-            // "-Wformat=2",
-            // "-Wredundant-decls",
-            // "-Wcast-qual",
-            // "-Wnull-dereference",
-            // "-Wno-deprecated-declarations",
-            // "-Wmissing-declarations",
-            // "-Wmissing-prototypes",
-            // "-Wmissing-noreturn",
-            // "-Wmissing-braces",
-            // "-Wparentheses",
-            // "-Wstrict-aliasing=3",
-            // "-Wstrict-overflow=2",
-            // "-Wlogical-op",
-            // "-Wwrite-strings",
-            // "-Wcast-align=strict",
-            // "-Wdisabled-optimization",
-            // "-Wshift-overflow=2",
-            // "-Wundef",
-            // "-Wshadow",
-            // "-Wmisleading-indentation",
-            // "-Wabsolute-value",
-            // "-Wunused-parameter",
-            // "-Wunused-function",
-        },
+        .flags = &.{},
     });
 
     const exe = b.addExecutable(.{
